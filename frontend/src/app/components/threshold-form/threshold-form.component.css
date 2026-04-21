@@ -1,0 +1,62 @@
+.threshold-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-header h3 {
+  margin: 0;
+}
+
+.section-header small {
+  color: var(--text-muted);
+}
+
+.empty,
+.muted {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.error {
+  margin: 0;
+  color: var(--danger);
+}
+
+form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+}
+
+input {
+  border: 1px solid var(--border);
+  border-radius: 0.45rem;
+  padding: 0.45rem 0.55rem;
+}
+
+button {
+  grid-column: span 2;
+  border: 0;
+  background: #215ccc;
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #7c97c9;
+  cursor: not-allowed;
+}

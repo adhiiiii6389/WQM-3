@@ -1,0 +1,25 @@
+:root {
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --surface-soft: #f8fafc;
+  --border: #dfe5ef;
+  --text: #1f2a44;
+  --text-muted: #66758f;
+  --accent: #2f6fed;
+  --ok: #20a36d;
+  --warn: #da8a1e;
+  --danger: #cb3a41;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: linear-gradient(180deg, #f9fbff 0%, #f2f6fc 100%);
+  color: var(--text);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

@@ -1,0 +1,154 @@
+.quality-chart {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-header h3 {
+  margin: 0;
+}
+
+.section-header small {
+  color: var(--text-muted);
+}
+
+.empty {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+svg {
+  width: 100%;
+  height: 230px;
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  background: #fbfdff;
+}
+
+.axis {
+  stroke: #c8d3e5;
+  stroke-width: 1;
+}
+
+.threshold {
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+}
+
+.threshold-ph {
+  stroke: #2166c9;
+}
+
+.threshold-turbidity {
+  stroke: #1e9a68;
+}
+
+.threshold-conductivity {
+  stroke: #cc7a1c;
+}
+
+polyline {
+  fill: none;
+  stroke-width: 2;
+}
+
+.line-ph {
+  stroke: #2166c9;
+}
+
+.line-turbidity {
+  stroke: #1e9a68;
+}
+
+.line-conductivity {
+  stroke: #cc7a1c;
+}
+
+.dot-ph {
+  fill: #2166c9;
+}
+
+.dot-turbidity {
+  fill: #1e9a68;
+}
+
+.dot-conductivity {
+  fill: #cc7a1c;
+}
+
+.legend {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.ph {
+  background: #2166c9;
+}
+
+.dot.turbidity {
+  background: #1e9a68;
+}
+
+.dot.conductivity {
+  background: #cc7a1c;
+}
+
+.dot.ph-band {
+  border: 2px dashed #2166c9;
+  background: transparent;
+}
+
+.dot.turbidity-band {
+  border: 2px dashed #1e9a68;
+  background: transparent;
+}
+
+.dot.conductivity-band {
+  border: 2px dashed #cc7a1c;
+  background: transparent;
+}
+
+.metric-table {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+  font-size: 0.84rem;
+}
+
+.metric-table div {
+  border: 1px solid var(--border);
+  border-radius: 0.45rem;
+  padding: 0.45rem 0.55rem;
+  background: #fbfdff;
+}
+
+.metric-table span {
+  color: var(--text-muted);
+}
+
+@media (max-width: 760px) {
+  .metric-table {
+    grid-template-columns: 1fr;
+  }
+}

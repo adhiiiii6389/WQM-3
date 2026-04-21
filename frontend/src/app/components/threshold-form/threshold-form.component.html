@@ -1,0 +1,50 @@
+<section class="panel threshold-form">
+  <div class="section-header">
+    <h3>Threshold Form</h3>
+    @if (selectedLineId) {
+      <small>Line ID: {{ selectedLineId }}</small>
+    }
+  </div>
+
+  @if (!selectedLineId) {
+    <p class="empty">Select a line to edit thresholds.</p>
+  } @else {
+    <form (ngSubmit)="save()">
+      <label>
+        Min pH
+        <input type="number" step="0.01" [(ngModel)]="minPh" name="minPh" />
+      </label>
+      <label>
+        Max pH
+        <input type="number" step="0.01" [(ngModel)]="maxPh" name="maxPh" />
+      </label>
+      <label>
+        Min Turbidity
+        <input type="number" step="0.01" [(ngModel)]="minTurbidity" name="minTurbidity" />
+      </label>
+      <label>
+        Max Turbidity
+        <input type="number" step="0.01" [(ngModel)]="maxTurbidity" name="maxTurbidity" />
+      </label>
+      <label>
+        Min Conductivity
+        <input type="number" step="0.01" [(ngModel)]="minConductivity" name="minConductivity" />
+      </label>
+      <label>
+        Max Conductivity
+        <input type="number" step="0.01" [(ngModel)]="maxConductivity" name="maxConductivity" />
+      </label>
+
+      <button type="submit" [disabled]="saving || loading">
+        {{ thresholdId ? 'Update Threshold' : 'Save Threshold' }}
+      </button>
+    </form>
+  }
+
+  @if (loading) {
+    <p class="muted">Loading threshold...</p>
+  }
+  @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+  }
+</section>

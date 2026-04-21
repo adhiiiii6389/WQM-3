@@ -1,0 +1,86 @@
+.line-status {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-header h3 {
+  margin: 0;
+}
+
+.section-header small {
+  color: var(--text-muted);
+}
+
+.empty {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.line-status ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.line-status li {
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  padding: 0.65rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.line-status li.selected {
+  border-color: #95b8ff;
+  background: #edf3ff;
+}
+
+.line-status p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.line-status small {
+  color: var(--text-muted);
+}
+
+.meta {
+  display: grid;
+  justify-items: end;
+  gap: 0.25rem;
+}
+
+.count {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.chip {
+  border-radius: 999px;
+  padding: 0.12rem 0.5rem;
+  font-size: 0.75rem;
+  border: 1px solid transparent;
+}
+
+.chip-ok {
+  color: #0c6b45;
+  background: #e8f8f0;
+  border-color: #b9e6d0;
+}
+
+.chip-danger {
+  color: #972631;
+  background: #ffe9ec;
+  border-color: #f4bcc4;
+}

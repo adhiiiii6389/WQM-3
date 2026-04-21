@@ -1,0 +1,69 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 28, 47, 0.46);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 40;
+}
+
+.dialog {
+  width: min(520px, 100%);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+header,
+footer {
+  padding: 0.85rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+
+footer {
+  border-bottom: 0;
+  border-top: 1px solid var(--border);
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+header h3 {
+  margin: 0;
+}
+
+.body {
+  padding: 1rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.body p {
+  margin: 0;
+}
+
+button {
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}
+
+button.ghost {
+  background: #eef2f9;
+  color: #2f3c56;
+}
+
+button.primary {
+  background: #215ccc;
+  color: #fff;
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}

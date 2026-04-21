@@ -1,0 +1,100 @@
+<div class="dashboard-shell">
+  <header class="topbar">
+    <div class="topbar-title-group">
+      <h1>Water Quality Monitor</h1>
+      <p>System dashboard</p>
+    </div>
+    <div class="topbar-meta">
+      <span class="badge">Live</span>
+      <span>Updated: {{ formatDate(lastUpdated) }}</span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Navigation</h2>
+      <nav>
+        @for (item of navItems; track item) {
+          <a
+            [routerLink]="['/dashboard']"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            {{ item }}
+          </a>
+        }
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section class="panel summary-grid">
+        @for (card of summaryCards; track card.label) {
+          <article class="summary-card" [class]="'tone-' + card.tone">
+            <p class="label">{{ card.label }}</p>
+            <p class="value">{{ card.value }}</p>
+            <p class="trend">{{ card.trend }}</p>
+          </article>
+        }
+      </section>
+
+      <section class="panel content-panels">
+        <div class="left-stack">
+          <app-line-status
+            [lines]="lines"
+            [incidents]="allIncidents"
+            [outOfSpecLineIds]="outOfSpecLineIds"
+            [selectedLineId]="selectedLineId"
+            (lineSelected)="selectLine($event)"
+          />
+          <app-quality-chart [readings]="readings" [threshold]="selectedThreshold" />
+        </div>
+
+        <div class="right-stack">
+          <app-threshold-form
+            [selectedLineId]="selectedLineId"
+            (thresholdUpdated)="onThresholdUpdated($event)"
+          />
+
+          <article class="panel incident-list">
+            <h3>Incidents</h3>
+            @if (lineIncidents.length === 0) {
+              <p class="muted">No incidents for selected line.</p>
+            } @else {
+              <ul>
+                @for (incident of lineIncidents; track incident.id) {
+                  <li>
+                    <div>
+                      <p>#{{ incident.id }} {{ incident.metric }}</p>
+                      <small>{{ formatDate(incident.createdAt) }}</small>
+                      <small>
+                        Reading {{ formatMetric(incident.readingValue) }} | Limit
+                        {{ formatMetric(incident.thresholdValue) }}
+                      </small>
+                    </div>
+                    <button type="button" (click)="openIncident(incident)">
+                      {{ incident.status }}
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </article>
+        </div>
+      </section>
+
+      @if (loading) {
+        <p class="muted">Loading dashboard data...</p>
+      }
+      @if (errorMessage) {
+        <p class="error">{{ errorMessage }}</p>
+      }
+    </main>
+  </div>
+
+  <app-incident-modal
+    [incident]="selectedIncident"
+    [busy]="resolvingIncident"
+    (closed)="closeIncidentModal()"
+    (resolved)="resolveIncident($event)"
+  />
+</div>

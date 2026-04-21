@@ -1,0 +1,33 @@
+@if (incident) {
+  <div class="backdrop" (click)="close()">
+    <section class="dialog" (click)="$event.stopPropagation()">
+      <header>
+        <h3>Incident #{{ incident.id }}</h3>
+        <button type="button" (click)="close()">Close</button>
+      </header>
+
+      <div class="body">
+        <p><strong>Line:</strong> {{ incident.line.name }}</p>
+        <p><strong>Metric:</strong> {{ incident.metric }}</p>
+        <p><strong>Status:</strong> {{ incident.status }}</p>
+        <p><strong>Reading:</strong> {{ formatMetric(incident.readingValue) }}</p>
+        <p><strong>Threshold:</strong> {{ formatMetric(incident.thresholdValue) }}</p>
+        <p><strong>Message:</strong> {{ incident.message || '-' }}</p>
+        <p><strong>Created:</strong> {{ formatDate(incident.createdAt) }}</p>
+        <p><strong>Resolved:</strong> {{ formatDate(incident.resolvedAt) }}</p>
+      </div>
+
+      <footer>
+        <button type="button" class="ghost" (click)="close()">Cancel</button>
+        <button
+          type="button"
+          class="primary"
+          [disabled]="busy || incident.status === 'RESOLVED'"
+          (click)="resolveIncident()"
+        >
+          Mark Resolved
+        </button>
+      </footer>
+    </section>
+  </div>
+}

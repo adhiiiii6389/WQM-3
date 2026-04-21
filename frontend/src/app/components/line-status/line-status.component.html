@@ -1,0 +1,29 @@
+<section class="panel line-status">
+  <div class="section-header">
+    <h3>Line Status</h3>
+    <small>{{ lines.length }} lines</small>
+  </div>
+
+  @if (lines.length === 0) {
+    <p class="empty">No lines available.</p>
+  } @else {
+    <ul>
+      @for (line of lines; track line.id) {
+        <li [class.selected]="selectedLineId === line.id" (click)="selectLine(line.id)">
+          <div>
+            <p>{{ line.name }}</p>
+            <small>{{ line.location || 'No location' }}</small>
+          </div>
+          <div class="meta">
+            @if (isOutOfSpec(line.id)) {
+              <span class="chip chip-danger">Out of spec</span>
+            } @else {
+              <span class="chip chip-ok">Within range</span>
+            }
+            <span class="count">{{ activeIncidents(line.id) }} active</span>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

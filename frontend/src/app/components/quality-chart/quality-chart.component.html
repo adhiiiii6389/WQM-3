@@ -1,0 +1,69 @@
+<section class="panel quality-chart">
+  <div class="section-header">
+    <h3>Quality Chart</h3>
+    <small>Latest {{ readings.length }} readings</small>
+  </div>
+
+  @if (!hasData) {
+    <p class="empty">Not enough readings to draw chart.</p>
+  } @else {
+    <svg [attr.viewBox]="'0 0 ' + width + ' ' + height" preserveAspectRatio="none">
+      <line class="axis" [attr.x1]="padding" [attr.y1]="height - padding" [attr.x2]="width - padding" [attr.y2]="height - padding" />
+      <line class="axis" [attr.x1]="padding" [attr.y1]="padding" [attr.x2]="padding" [attr.y2]="height - padding" />
+
+      @if (phMinBandY !== null) {
+        <line class="threshold threshold-ph" [attr.x1]="padding" [attr.y1]="phMinBandY" [attr.x2]="width - padding" [attr.y2]="phMinBandY" />
+      }
+      @if (phMaxBandY !== null) {
+        <line class="threshold threshold-ph" [attr.x1]="padding" [attr.y1]="phMaxBandY" [attr.x2]="width - padding" [attr.y2]="phMaxBandY" />
+      }
+      @if (turbidityMinBandY !== null) {
+        <line class="threshold threshold-turbidity" [attr.x1]="padding" [attr.y1]="turbidityMinBandY" [attr.x2]="width - padding" [attr.y2]="turbidityMinBandY" />
+      }
+      @if (turbidityMaxBandY !== null) {
+        <line class="threshold threshold-turbidity" [attr.x1]="padding" [attr.y1]="turbidityMaxBandY" [attr.x2]="width - padding" [attr.y2]="turbidityMaxBandY" />
+      }
+      @if (conductivityMinBandY !== null) {
+        <line class="threshold threshold-conductivity" [attr.x1]="padding" [attr.y1]="conductivityMinBandY" [attr.x2]="width - padding" [attr.y2]="conductivityMinBandY" />
+      }
+      @if (conductivityMaxBandY !== null) {
+        <line class="threshold threshold-conductivity" [attr.x1]="padding" [attr.y1]="conductivityMaxBandY" [attr.x2]="width - padding" [attr.y2]="conductivityMaxBandY" />
+      }
+
+      <polyline class="line-ph" [attr.points]="phPoints"></polyline>
+      <polyline class="line-turbidity" [attr.points]="turbidityPoints"></polyline>
+      <polyline class="line-conductivity" [attr.points]="conductivityPoints"></polyline>
+
+      @for (dot of phDots; track $index) {
+        <circle class="dot-ph" [attr.cx]="dot.x" [attr.cy]="dot.y" r="2.4">
+          <title>{{ dot.tooltip }}</title>
+        </circle>
+      }
+      @for (dot of turbidityDots; track $index) {
+        <circle class="dot-turbidity" [attr.cx]="dot.x" [attr.cy]="dot.y" r="2.4">
+          <title>{{ dot.tooltip }}</title>
+        </circle>
+      }
+      @for (dot of conductivityDots; track $index) {
+        <circle class="dot-conductivity" [attr.cx]="dot.x" [attr.cy]="dot.y" r="2.4">
+          <title>{{ dot.tooltip }}</title>
+        </circle>
+      }
+    </svg>
+
+    <div class="legend">
+      <span><i class="dot ph"></i> pH line</span>
+      <span><i class="dot ph-band"></i> pH band</span>
+      <span><i class="dot turbidity"></i> Turbidity line</span>
+      <span><i class="dot turbidity-band"></i> Turbidity band</span>
+      <span><i class="dot conductivity"></i> Conductivity line</span>
+      <span><i class="dot conductivity-band"></i> Conductivity band</span>
+    </div>
+
+    <div class="metric-table">
+      <div><span>Latest pH:</span> <strong>{{ formatNumber(sortedReadings[sortedReadings.length - 1].ph) }}</strong></div>
+      <div><span>Latest Turbidity:</span> <strong>{{ formatNumber(sortedReadings[sortedReadings.length - 1].turbidity) }}</strong></div>
+      <div><span>Latest Conductivity:</span> <strong>{{ formatNumber(sortedReadings[sortedReadings.length - 1].conductivity) }}</strong></div>
+    </div>
+  }
+</section>
