@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { from, Observable } from 'rxjs';
 
 import { QualityReading } from '../models/wqm.models';
+import { fetchJson } from './api-http.util';
 
 @Injectable({ providedIn: 'root' })
 export class ReadingApiService {
@@ -14,15 +15,7 @@ export class ReadingApiService {
   ): Observable<QualityReading[]> {
     const query = new URLSearchParams({ startTs, endTs });
     return from(
-      this.getJson<QualityReading[]>(`${this.baseUrl}/line/${lineId}?${query.toString()}`),
+      fetchJson<QualityReading[]>(`${this.baseUrl}/line/${lineId}?${query.toString()}`),
     );
-  }
-
-  private async getJson<T>(url: string): Promise<T> {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Request failed: ${response.status}`);
-    }
-    return (await response.json()) as T;
   }
 }

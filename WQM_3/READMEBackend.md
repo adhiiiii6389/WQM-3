@@ -72,3 +72,18 @@ If the wrapper is executable, this also works:
 - The simulator also creates demo data if the database starts empty.
 - If MySQL is not running, the backend will not start.
 - This README is only for the backend inside `WQM_3`.
+
+## Connectivity Troubleshooting (Frontend <-> Backend)
+1. Confirm MySQL is running and reachable on `localhost:3306`.
+2. Start backend and verify API health quickly:
+   - `curl http://localhost:8081/api/lines`
+3. Start frontend with proxy enabled from `frontend/`:
+   - `npm start`
+4. Verify frontend proxy target in `frontend/proxy.conf.json` points to `http://localhost:8081`.
+5. If you run frontend without Angular dev proxy, backend CORS now allows `http://localhost:4200` for `/api/**`.
+
+Environment overrides are supported for local setup differences:
+- `DB_URL`
+- `DB_USERNAME`
+- `DB_PASSWORD`
+- `SERVER_PORT`

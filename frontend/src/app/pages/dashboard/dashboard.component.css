@@ -33,6 +33,19 @@
   color: var(--text-muted);
 }
 
+.retry-btn {
+  border: 1px solid #d3def3;
+  border-radius: 0.45rem;
+  background: #f5f8ff;
+  color: #214d9d;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+}
+
+.retry-btn:hover {
+  background: #edf3ff;
+}
+
 .badge {
   background: #e6f4ff;
   border: 1px solid #c6e5ff;
