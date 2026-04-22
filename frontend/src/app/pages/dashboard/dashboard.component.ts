@@ -183,8 +183,8 @@ export class DashboardComponent implements OnInit {
 
   private loadLineData(lineId: number): void {
     const now = new Date();
-    const start = new Date(now.getTime() - 6 * 60 * 60 * 1000).toISOString().replace('Z', '');
-    const end = now.toISOString().replace('Z', '');
+    const start = new Date(now.getTime() - 6 * 60 * 60 * 1000).toISOString().slice(0, -1);
+    const end = now.toISOString().slice(0, -1);
 
     forkJoin({
       readings: this.readingApi.getByLineAndWindow(lineId, start, end),
