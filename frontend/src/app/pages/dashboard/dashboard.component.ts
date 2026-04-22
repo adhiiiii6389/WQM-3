@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 
 import { IncidentModalComponent } from '../../components/incident-modal/incident-modal.component';
 import { LineStatusComponent } from '../../components/line-status/line-status.component';
@@ -41,7 +41,11 @@ interface SummaryCard {
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
+  private readonly refreshIntervalMs = 10000;
+  private refreshTimer: ReturnType<typeof setInterval> | null = null;
+  private initialRetryTimer: ReturnType<typeof setTimeout> | null = null;
+
   lines: Line[] = [];
   sensors: WaterSensor[] = [];
   allIncidents: Incident[] = [];
@@ -76,6 +80,20 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDashboard();
+    this.triggerInitialRetry();
+    this.startAutoRefresh();
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = null;
+    }
+
+    if (this.initialRetryTimer) {
+      clearTimeout(this.initialRetryTimer);
+      this.initialRetryTimer = null;
+    }
   }
 
   get summaryCards(): SummaryCard[] {
@@ -148,15 +166,40 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  retryLoad(): void {
+    this.loadDashboard();
+  }
+
   private loadDashboard(): void {
     this.loading = true;
     this.errorMessage = '';
+    const warnings: string[] = [];
 
     forkJoin({
-      lines: this.lineApi.getAll(),
-      sensors: this.sensorApi.getAll(),
-      incidents: this.incidentApi.getAll(),
-      outOfSpec: this.processApi.getOutOfSpecLines(),
+      lines: this.lineApi.getAll().pipe(
+        catchError((error: unknown) => {
+          warnings.push(this.buildErrorMessage('lines', error));
+          return of<Line[]>([]);
+        }),
+      ),
+      sensors: this.sensorApi.getAll().pipe(
+        catchError((error: unknown) => {
+          warnings.push(this.buildErrorMessage('sensors', error));
+          return of<WaterSensor[]>([]);
+        }),
+      ),
+      incidents: this.incidentApi.getAll().pipe(
+        catchError((error: unknown) => {
+          warnings.push(this.buildErrorMessage('incidents', error));
+          return of<Incident[]>([]);
+        }),
+      ),
+      outOfSpec: this.processApi.getOutOfSpecLines().pipe(
+        catchError((error: unknown) => {
+          warnings.push(this.buildErrorMessage('out-of-spec lines', error));
+          return of<Line[]>([]);
+        }),
+      ),
     }).subscribe({
       next: ({ lines, sensors, incidents, outOfSpec }) => {
         this.lines = lines;
@@ -165,6 +208,10 @@ export class DashboardComponent implements OnInit {
         this.outOfSpecLineIds = outOfSpec.map((line) => line.id);
         this.lastUpdated = new Date().toISOString();
         this.loading = false;
+        this.errorMessage =
+          warnings.length > 0
+            ? `Partial data loaded. ${warnings.join(' | ')}`
+            : '';
 
         if (!this.selectedLineId && this.lines.length > 0) {
           this.selectedLineId = this.lines[0].id;
@@ -174,9 +221,9 @@ export class DashboardComponent implements OnInit {
           this.loadLineData(this.selectedLineId);
         }
       },
-      error: () => {
+      error: (error) => {
         this.loading = false;
-        this.errorMessage = 'Failed to load dashboard data.';
+        this.errorMessage = this.buildErrorMessage('dashboard', error);
       },
     });
   }
@@ -185,21 +232,57 @@ export class DashboardComponent implements OnInit {
     const now = new Date();
     const start = new Date(now.getTime() - 6 * 60 * 60 * 1000).toISOString();
     const end = now.toISOString();
+    const warnings: string[] = [];
 
     forkJoin({
-      readings: this.readingApi.getByLineAndWindow(lineId, start, end),
-      thresholds: this.thresholdApi.getLatestByLine(lineId),
-      incidents: this.incidentApi.getByLine(lineId),
+      readings: this.readingApi.getByLineAndWindow(lineId, start, end).pipe(
+        catchError((error: unknown) => {
+          warnings.push(this.buildErrorMessage('readings', error));
+          return of<QualityReading[]>([]);
+        }),
+      ),
+      thresholds: this.thresholdApi.getLatestByLine(lineId).pipe(
+        catchError((error: unknown) => {
+          warnings.push(this.buildErrorMessage('thresholds', error));
+          return of<Threshold[]>([]);
+        }),
+      ),
+      incidents: this.incidentApi.getByLine(lineId).pipe(
+        catchError((error: unknown) => {
+          warnings.push(this.buildErrorMessage('line incidents', error));
+          return of<Incident[]>([]);
+        }),
+      ),
     }).subscribe({
       next: ({ readings, thresholds, incidents }) => {
         this.readings = readings;
         this.selectedThreshold = thresholds[0] ?? null;
         this.lineIncidents = incidents;
+        if (warnings.length > 0) {
+          this.errorMessage = `Partial line data loaded. ${warnings.join(' | ')}`;
+        }
       },
-      error: () => {
-        this.errorMessage = 'Failed to load line details.';
+      error: (error) => {
+        this.errorMessage = this.buildErrorMessage('line details', error);
       },
     });
+  }
+
+  private buildErrorMessage(sourceName: string, error: unknown): string {
+    const detail = error instanceof Error ? error.message : 'Unknown error';
+    return `Failed to load ${sourceName}: ${detail}`;
+  }
+
+  private startAutoRefresh(): void {
+    this.refreshTimer = setInterval(() => {
+      this.loadDashboard();
+    }, this.refreshIntervalMs);
+  }
+
+  private triggerInitialRetry(): void {
+    this.initialRetryTimer = setTimeout(() => {
+      this.retryLoad();
+    }, 1200);
   }
 
   private refreshIncidents(): void {

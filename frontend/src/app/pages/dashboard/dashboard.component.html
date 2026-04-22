@@ -6,7 +6,9 @@
     </div>
     <div class="topbar-meta">
       <span class="badge">Live</span>
+      <span>Auto refresh: 10s</span>
       <span>Updated: {{ formatDate(lastUpdated) }}</span>
+      <button type="button" class="retry-btn" (click)="retryLoad()">Retry now</button>
     </div>
   </header>
 
